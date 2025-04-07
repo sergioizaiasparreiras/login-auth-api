@@ -1,4 +1,4 @@
-package com.example.login_auth_api.Controller;
+package com.example.login_auth_api.controller;
 
 // Via contrutor o spring tambem consegue fazer injeção de dependências
 
