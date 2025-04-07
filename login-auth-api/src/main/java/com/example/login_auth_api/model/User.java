@@ -6,7 +6,6 @@ import lombok.Setter;
 
 // Entitdade de Usuário
 
-
 @Entity
 @Table(name= "users")
 @Getter
