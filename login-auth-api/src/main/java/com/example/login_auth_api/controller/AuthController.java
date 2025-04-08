@@ -7,7 +7,7 @@ import com.example.login_auth_api.dto.RegisterRequestDTO;
 import com.example.login_auth_api.dto.ResponseDTO;
 import com.example.login_auth_api.model.User;
 import com.example.login_auth_api.repository.UserRepository;
-import com.example.login_auth_api.security.TokenService;
+import com.example.login_auth_api.infra.security.TokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -31,7 +31,7 @@ public class AuthController {
     public ResponseEntity<ResponseDTO> login(@RequestBody LoginRequestDTO body){
         User user = this.repository.findByEmail(body.email()).orElseThrow(() -> new RuntimeException("User not found"));
         if(passwordEncoder.matches(body.password(), user.getPassword())){
-            String token = this.tokenService.generetionToken(user);
+            String token = this.tokenService.generationToken(user);
             return ResponseEntity.ok(new ResponseDTO(user.getName(), token));
         }
         return ResponseEntity.badRequest().build();
@@ -48,7 +48,7 @@ public class AuthController {
             newUser.setName(body.name());
             this.repository.save(newUser);
 
-            String token = this.tokenService.generetionToken(newUser);
+            String token = this.tokenService.generationToken(newUser);
             return ResponseEntity.ok(new ResponseDTO(newUser.getName(), token));
         }
         return ResponseEntity.badRequest().build();

@@ -1,4 +1,4 @@
-package com.example.login_auth_api.security;
+package com.example.login_auth_api.infra.security;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -17,20 +17,20 @@ public class TokenService {
     @Value("${api.security.token.secret}")
     private String secret;
 
-    public String generetionToken(User user){
-        try{
-
+    public String generationToken(User user) {
+        try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
             return JWT.create()
                     .withIssuer("login-auth-api")
                     .withSubject(user.getEmail())
                     .withExpiresAt(this.generationExpirationDate())
                     .sign(algorithm);
-
-        } catch(JWTCreationException exception){
-            throw new RuntimeException("Error while authenticating");
+        } catch(JWTCreationException exception) {
+            throw new RuntimeException("Error while authenticating", exception);
         }
     }
+
+
 
     public String validateToken(String token){
         try {

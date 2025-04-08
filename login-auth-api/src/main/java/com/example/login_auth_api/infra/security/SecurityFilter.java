@@ -1,4 +1,4 @@
-package com.example.login_auth_api.security;
+package com.example.login_auth_api.infra.security;
 
 import com.example.login_auth_api.repository.UserRepository;
 import com.example.login_auth_api.model.User;
@@ -6,7 +6,6 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -26,9 +25,8 @@ public class SecurityFilter extends OncePerRequestFilter {
     private final UserRepository userRepository;
 
     @Override
-    public void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
-                                 @NonNull FilterChain filterChain) throws ServletException, IOException{
-        var token = recoverToken(request);
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        var token = this.recoverToken(request);
         var login = tokenService.validateToken(token);
 
         if(login != null){
@@ -42,7 +40,8 @@ public class SecurityFilter extends OncePerRequestFilter {
 
     private String recoverToken(HttpServletRequest request){
         var authHeader = request.getHeader("Authorization");
-        if(authHeader == null) return null;
-        return authHeader.replace("Bearer", "");
+        if(authHeader == null || !authHeader.startsWith("Bearer ")) return null;
+        return authHeader.replace("Bearer ", ""); // <-- repara no espaço aqui!
     }
+
 }
